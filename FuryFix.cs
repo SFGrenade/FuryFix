@@ -10,9 +10,9 @@ namespace FuryFix
     {
         internal static FuryFix Instance;
 
-        private PlayerData pd;
-        private HeroController hero;
-        private PlayMakerFSM slashFsm;
+        private PlayerData _pd;
+        private HeroController _hero;
+        private PlayMakerFSM _slashFsm;
 
         public override string GetVersion() => Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
@@ -69,24 +69,24 @@ namespace FuryFix
 
         private void OnAfterSavegameLoad(SaveGameData data)
         {
-            GameManager.instance.StartCoroutine(fixFury());
+            GameManager.instance.StartCoroutine(FixFury());
         }
 
-        private IEnumerator fixFury()
+        private IEnumerator FixFury()
         {
             yield return new WaitWhile(() => !GameObject.Find("Charm Effects"));
 
-            pd = PlayerData.instance;
-            hero = HeroController.instance;
-            slashFsm = hero.normalSlashFsm;
-            GameObject furyGO = GameObject.Find("Charm Effects");
-            PlayMakerFSM furyFSM = furyGO.LocateMyFSM("Fury");
-            furyFSM.ChangeTransition("Init", "FINISHED", "Pause");
-            furyFSM.ChangeTransition("Check HP", "CANCEL", "Pause");
-            furyFSM.ChangeTransition("Deactivate", "FINISHED", "Pause");
-            furyFSM.ChangeTransition("Activate", "HERO HEALED FULL", "Recheck");
-            furyFSM.ChangeTransition("Stay Furied", "HERO HEALED FULL", "Recheck");
-            furyFSM.SetState("Pause");
+            _pd = PlayerData.instance;
+            _hero = HeroController.instance;
+            _slashFsm = _hero.normalSlashFsm;
+            GameObject furyGo = GameObject.Find("Charm Effects");
+            PlayMakerFSM furyFsm = furyGo.LocateMyFSM("Fury");
+            furyFsm.ChangeTransition("Init", "FINISHED", "Pause");
+            furyFsm.ChangeTransition("Check HP", "CANCEL", "Pause");
+            furyFsm.ChangeTransition("Deactivate", "FINISHED", "Pause");
+            furyFsm.ChangeTransition("Activate", "HERO HEALED FULL", "Recheck");
+            furyFsm.ChangeTransition("Stay Furied", "HERO HEALED FULL", "Recheck");
+            furyFsm.SetState("Pause");
 
             //bool furyCharmCheck = false;
             //bool slashFuryCheck = false;
@@ -107,14 +107,14 @@ namespace FuryFix
             int health = 0;
             bool furyEffect = false;
 
-            var furyState = furyFSM.GetState("Activate");
+            var furyState = furyFsm.GetState("Activate");
             var furyActions = furyState.Actions;
-            var notFuryState = furyFSM.GetState("Deactivate");
+            var notFuryState = furyFsm.GetState("Deactivate");
             var notFuryActions = notFuryState.Actions;
             while (true)
             {
-                furyCharm = pd.GetBool("equippedCharm_6");
-                health = pd.GetInt("health");
+                furyCharm = _pd.GetBool("equippedCharm_6");
+                health = _pd.GetInt("health");
                 furyEffect = furyCharm && (health == 1);
 
                 if (furyEffect)
