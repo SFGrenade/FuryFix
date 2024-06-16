@@ -31,7 +31,7 @@ namespace FuryFix
             {
                 if (orig)
                 {
-                    
+
                 }
                 else
                 {
@@ -50,7 +50,7 @@ namespace FuryFix
             //self.playerData.maxHealth = tmpMaxHealth + 1;
             //self.playerData.healthBlue = 0;
             //ReflectionExtensions.SetAttr<HeroController, bool>(self, "joniBeam", false);
-            
+
             if (self.playerData.GetBool("equippedCharm_6"))
             {
                 self.playerData.SetInt("maxHealth", self.playerData.GetInt("maxHealth") + 1);
